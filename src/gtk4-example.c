@@ -167,10 +167,11 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
 int main(int argc, char *argv[]) {
   gint status;
-  g_autoptr(GtkApplication) app =
+  GtkApplication *app =
       gtk_application_new("org.example.gtk4", G_APPLICATION_FLAGS_NONE);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
   status = g_application_run(G_APPLICATION(app), argc, argv);
+  g_object_unref(app);
 
   return status;
 }
