@@ -85,7 +85,7 @@ static gchar *generate_password(gsize len) {
    * not very nice, but it gets the job done for now (and it's just slightly
    * less messy to code than g_malloc()-ing a gchar* block of size len).
    */
-  GString *password = g_string_new("");
+  GString *password = g_string_sized_new(len);
   for (gsize i = 0; i < len; ++i) {
     g_string_append_c(password, random_password_character());
   }
@@ -179,7 +179,7 @@ static GtkWidget *create_buttons_box() {
  * @param app The GtkApplication that emitted the "activate" signal.
  * @param user_data Additional data supplied by the caller.
  */
-static void activate(GtkApplication *app, gpointer user_data) {
+static void on_app_activated(GtkApplication *app, gpointer user_data) {
   /* Documentation for functions that create new GtkWidget objects, such as
    * gtk_box_new(), state that the returned data is "owned by the called
    * function". This means that we shouldn't explicitly clean these objects up.
@@ -222,18 +222,20 @@ int main(int argc, char *argv[]) {
   /* The GtkApplication object inherits the "activate" signal from GApplication:
    * https://docs.gtk.org/gtk4/class.Application.html#signals
    *
-   * When the app emits "activate", the callback below is invoked. The signature
-   * of the handler is dictated by the signal. In this case, our activate()
-   * handler function should look like this:
+   * Connect the "activate" signal emitted by our GtkApplication with
+   * on_app_activated() handler defined above.
+   *
+   * The signature of a handler is dictated by the signal. In this case, our
+   * on_app_activated() handler function should look like this:
    * https://docs.gtk.org/gio/signal.Application.activate.html
    *
    * Since g_signal_connect() expects a pointer to a GCallback, we cast our
-   * handler to it via the G_CALLBACK macro.
+   * handler via the G_CALLBACK macro when passing it.
    *
    * We can pass any other data to the callback using the last arguments to
    * g_signal_connect() (we don't need to in this case, so we just pass NULL).
    */
-  g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
+  g_signal_connect(app, "activate", G_CALLBACK(on_app_activated), NULL);
   /* Run the application (and the main loop). Note that our app, a
    * GtkApplication, is upcasted to its parent, GApplication.
    */
