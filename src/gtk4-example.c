@@ -180,6 +180,38 @@ static GtkWidget *create_buttons_box() {
  * @param user_data Additional data supplied by the caller.
  */
 static void on_app_activated(GtkApplication *app, gpointer user_data) {
+  /*
+   * Widget-wise, there are two labels ("HOW MANY CHARACTERS?" and "YOUR RANDOM
+   * PASSWORD", two buttons ("GENERATE" and "COPY"), one GtkEntry (input_entry),
+   * and one GtkTextView (output_text_entry):
+   *
+   *    +---------------------------------------------------+
+   *    | HOW MANY CHARACTERS? +-------------------------+  |
+   *    |                      |  <input_entry>          |  |
+   *    |                      +-------------------------+  |
+   *    |               YOUR RANDOM PASSWORD                |
+   *    | +-----------------------------------------------+ |
+   *    | |      <output_text_entry>                      | |
+   *    | |                                               | |
+   *    | +-----------------------------------------------+ |
+   *    |                                                   |
+   *    | = GENERATE =          = COPY =                    |
+   *    +---------------------------------------------------+
+   *
+   * The "HOW MANY CHARACTERS?" label and input_entry are in their own
+   * horizontally-oriented input_box GtkBox. The "YOUR RANDOM PASSWORD" label
+   * and output_text_entry are in their own vertically-oriented output_box
+   * GtkBox. Likewise, the two buttons are in their own horizontally-oriented
+   * buttons_box GtkBox.
+   *
+   * The three boxes are added to a vertically-oriented root_box GtkBox which is
+   * set as the child to a GtkWindow.
+   *
+   * I don't think that this is the best or even the preferred way of laying
+   * widgets. TODO: have a look at the layout manager:
+   * https://docs.gtk.org/gtk4/class.LayoutManager.html
+   */
+
   /* Documentation for functions that create new GtkWidget objects, such as
    * gtk_box_new(), state that the returned data is "owned by the called
    * function". This means that we shouldn't explicitly clean these objects up.
